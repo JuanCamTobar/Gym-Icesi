@@ -1,0 +1,94 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
+import RoutinesPage from './pages/RoutinesPage';
+import ProgressPage from './pages/ProgressPage';
+import AdminPage from './pages/AdminPage';
+import UserManagementPage from './pages/UserManagementPage';
+import TrainerManagementPage from './pages/TrainerManagementPage';
+import StatisticsPage from './pages/StatisticsPage';
+import ReportsPage from './pages/ReportsPage';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import './App.css';
+
+function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/routines"
+          element={
+            <ProtectedRoute>
+              <RoutinesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <ProtectedRoute>
+              <ProgressPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <UserManagementPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/trainers"
+          element={
+            <AdminRoute>
+              <TrainerManagementPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/statistics"
+          element={
+            <AdminRoute>
+              <StatisticsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <AdminRoute>
+              <ReportsPage />
+            </AdminRoute>
+          }
+        />
+        <Route path="/" element={<LoginPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
