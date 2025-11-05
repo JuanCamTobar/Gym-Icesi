@@ -18,75 +18,75 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/routines"
-          element={
-            <ProtectedRoute>
-              <RoutinesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/progress"
-          element={
-            <ProtectedRoute>
-              <ProgressPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminPage />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <AdminRoute>
-              <UserManagementPage />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/trainers"
-          element={
-            <AdminRoute>
-              <TrainerManagementPage />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/statistics"
-          element={
-            <AdminRoute>
-              <StatisticsPage />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/reports"
-          element={
-            <AdminRoute>
-              <ReportsPage />
-            </AdminRoute>
-          }
-        />
-        <Route path="/" element={<LoginPage />} />
-      </Routes>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/routines"
+            element={
+              <ProtectedRoute>
+                <RoutinesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/progress"
+            element={
+              <ProtectedRoute>
+                <ProgressPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <UserManagementPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/trainers"
+            element={
+              <AdminRoute>
+                <TrainerManagementPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/statistics"
+            element={
+              <AdminRoute>
+                <StatisticsPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/reports"
+            element={
+              <AdminRoute>
+                <ReportsPage />
+              </AdminRoute>
+            }
+          />
+          <Route path="/" element={<LoginPage />} />
+        </Routes>
     </Router>
   );
 }

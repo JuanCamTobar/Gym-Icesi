@@ -6,7 +6,6 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
   const [department, setDepartment] = useState('');
   const [program, setProgram] = useState('');
   const [error, setError] = useState('');
@@ -18,82 +17,112 @@ const RegisterPage = () => {
     setError('');
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
     try {
-      await register(name, email, password, role, department, program);
+      await register(name, email, password, 'user', department, program);
       navigate('/login');
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.msg) {
+      if (err.response?.data?.msg) {
         setError(err.response.data.msg);
-      } else if (err.response && err.response.data && err.response.data.errors) {
+      } else if (err.response?.data?.errors) {
         setError(err.response.data.errors.map(e => e.msg).join(', '));
       } else {
-        setError('Failed to register');
+        setError('Error al registrar el usuario');
       }
     }
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Role</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="user">User</option>
-            <option value="trainer">Trainer</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <div>
-          <label>Department</label>
-          <input
-            type="text"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Program</label>
-          <input
-            type="text"
-            value={program}
-            onChange={(e) => setProgram(e.target.value)}
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 px-4 py-8">
+      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-3xl">
+        <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-6">
+          Registro ICESI Fitness
+        </h2>
+
+        {error && (
+          <div className="bg-red-100 text-red-700 text-sm p-3 rounded-md mb-4 text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Nombre completo</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Correo institucional</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Contraseña</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Departamento</label>
+              <input
+                type="text"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-1">Programa</label>
+              <input
+                type="text"
+                value={program}
+                onChange={(e) => setProgram(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200 mt-6"
+          >
+            Crear cuenta
+          </button>
+        </form>
+
+        <p className="text-center text-gray-600 text-sm mt-8">
+          ¿Ya tienes una cuenta?{' '}
+          <button
+            onClick={() => navigate('/login')}
+            className="text-indigo-700 font-semibold hover:underline"
+          >
+            Inicia sesión
+          </button>
+        </p>
+      </div>
     </div>
   );
 };
