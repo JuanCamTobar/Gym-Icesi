@@ -35,6 +35,8 @@ StatisticsUser.belongsTo(User, { foreignKey: 'user_id', targetKey: 'username' })
 Trainer.hasMany(StatisticsTrainer, { foreignKey: 'trainer_id' });
 StatisticsTrainer.belongsTo(Trainer, { foreignKey: 'trainer_id' });
 
+
+
 // Assuming a user can be assigned to a trainer
 // This creates a foreign key `trainerId` in the User model
 Trainer.hasMany(User, { foreignKey: 'trainerId' });
@@ -59,10 +61,10 @@ Employee.belongsTo(ContractType, { foreignKey: 'contract_type' });
 ContractType.hasMany(Employee, { foreignKey: 'contract_type' });
 Employee.belongsTo(EmployeeType, { foreignKey: 'employee_type' });
 EmployeeType.hasMany(Employee, { foreignKey: 'employee_type' });
-Employee.belongsTo(Faculty, { foreignKey: 'faculty_code' });
-Faculty.hasMany(Employee, { foreignKey: 'faculty_code' });
-Employee.belongsTo(Campus, { foreignKey: 'campus_code' });
-Campus.hasMany(Employee, { foreignKey: 'campus_code' });
+Employee.belongsTo(Faculty, { foreignKey: 'faculty_code', targetKey: 'code' });
+Faculty.hasMany(Employee, { foreignKey: 'faculty_code', sourceKey: 'code' });
+Employee.belongsTo(Campus, { foreignKey: 'campus_code', targetKey: 'code' });
+Campus.hasMany(Employee, { foreignKey: 'campus_code', sourceKey: 'code' });
 Employee.belongsTo(City, { foreignKey: 'birth_place_code' });
 City.hasMany(Employee, { foreignKey: 'birth_place_code' });
 

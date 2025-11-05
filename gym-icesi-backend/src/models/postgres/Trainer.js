@@ -15,6 +15,10 @@ const Trainer = sequelize.define('Trainer', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  employee_id: {
+    type: DataTypes.STRING(15),
+    allowNull: true,
+  },
 }, {
   tableName: 'trainers',
   timestamps: true,

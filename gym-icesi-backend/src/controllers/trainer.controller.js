@@ -1,58 +1,28 @@
-const { Trainer, User } = require('../models/postgres');
+const { Trainer, User, Employee, Faculty, Campus, Student } = require('../models/postgres');
+const { sequelize } = require('../config/db.postgres');
 
-// Get all trainers
+// Get all trainers (employees with type 'Instructor')
 exports.getTrainers = async (req, res) => {
   try {
-    const trainers = await Trainer.findAll();
+    const trainers = await sequelize.query(
+      `SELECT 
+        e.*, 
+        t.id AS trainer_uuid,
+        f.name AS "Faculty.name", 
+        c.name AS "Campus.name"
+      FROM 
+        employees e
+      LEFT JOIN
+        trainers t ON e.id = t.employee_id
+      LEFT JOIN 
+        faculties f ON e.faculty_code = f.code
+      LEFT JOIN 
+        campuses c ON e.campus_code = c.code
+      WHERE 
+        e.employee_type = 'Instructor'`,
+      { type: sequelize.QueryTypes.SELECT }
+    );
     res.json(trainers);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
-// Create a new trainer
-exports.createTrainer = async (req, res) => {
-  const { name, specialization } = req.body;
-  try {
-    const trainer = await Trainer.create({
-      name,
-      specialization,
-    });
-    res.status(201).json(trainer);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
-// Update trainer by ID
-exports.updateTrainer = async (req, res) => {
-  const { name, specialization } = req.body;
-  try {
-    let trainer = await Trainer.findByPk(req.params.id);
-    if (!trainer) {
-      return res.status(404).json({ msg: 'Trainer not found' });
-    }
-
-    await trainer.update({ name, specialization });
-    res.json(trainer);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
-// Delete trainer by ID
-exports.deleteTrainer = async (req, res) => {
-  try {
-    const trainer = await Trainer.findByPk(req.params.id);
-    if (!trainer) {
-      return res.status(404).json({ msg: 'Trainer not found' });
-    }
-
-    await trainer.destroy();
-    res.json({ msg: 'Trainer removed successfully' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -67,9 +37,11 @@ exports.getTrainerUsers = async (req, res) => {
       return res.status(404).json({ msg: 'Trainer not found' });
     }
 
-    // Assuming users have a trainer_id field or a many-to-many relationship
-    // For now, let's assume a user has a 'trainerId' field if assigned
-    const users = await User.findAll({ where: { trainerId: req.params.id }, attributes: { exclude: ['password'] } });
+    const users = await User.findAll({ 
+      where: { trainerId: req.params.id }, 
+      attributes: { exclude: ['password'] },
+      include: [Student, Employee]
+    });
     res.json(users);
   } catch (err) {
     console.error(err.message);

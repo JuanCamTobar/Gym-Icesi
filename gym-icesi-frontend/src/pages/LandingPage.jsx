@@ -1,8 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleLoginClick = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 flex flex-col items-center justify-center text-gray-800 p-4">
@@ -15,13 +25,7 @@ const LandingPage = () => {
         </p>
         <div className="space-x-4">
           <button
-            onClick={() => navigate('/register')}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300"
-          >
-            Únete Ahora
-          </button>
-          <button
-            onClick={() => navigate('/login')}
+            onClick={handleLoginClick}
             className="bg-white text-indigo-600 border border-indigo-600 font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300"
           >
             Iniciar Sesión

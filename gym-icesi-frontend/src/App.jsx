@@ -1,7 +1,6 @@
 import LandingPage from './pages/LandingPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import RoutinesPage from './pages/RoutinesPage';
 import ProgressPage from './pages/ProgressPage';
@@ -21,7 +20,8 @@ function App() {
       <Navbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+
+
           <Route path="/" element={<LandingPage />} />
           <Route
             path="/dashboard"

@@ -17,12 +17,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const register = async (name, email, password, role, department, program) => {
-    return authService.register(name, email, password, role, department, program);
-  };
+
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

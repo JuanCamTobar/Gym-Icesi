@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:3000/routines';
 const getAuthHeader = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (user && user.token) {
-    return { Authorization: 'Bearer ' + user.token };
+    return { 'x-auth-token': user.token };
   }
   return {};
 };

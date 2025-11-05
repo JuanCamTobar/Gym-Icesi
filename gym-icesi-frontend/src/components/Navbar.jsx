@@ -1,36 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logo.png'; // Import the logo
+import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-lg font-bold flex items-center">
-          <img src={logo} alt="Gym Icesi Logo" className="h-20 w-20 mr-2" />
-          <span className="text-2xl font-extrabold tracking-wide text-white-400">Gym Icesi</span>
+    <nav className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 shadow-md">
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="Gym Icesi Logo" className="h-14 w-14 mr-2" />
+          <span className="text-2xl font-extrabold tracking-wide text-white">Gym Icesi</span>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-6">
           {user ? (
             <>
-              <Link to="/dashboard" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                <span className="text-2xl font-extrabold tracking-wide text-white-400">Dashboard</span>
-              </Link>
-              <Link to="/routines" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                <span className="text-2xl font-extrabold tracking-wide text-white-400">Routines</span>
-              </Link>
-              <Link to="/progress" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                <span className="text-2xl font-extrabold tracking-wide text-white-400">Progress</span>
-              </Link>
-              {user.user.role === 'admin' && (
-                <Link to="/admin" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                  Admin
-                </Link>
+              <Link to="/dashboard" className="text-white/90 hover:text-indigo-300 text-base font-medium">Dashboard</Link>
+              <Link to="/routines" className="text-white/90 hover:text-indigo-300 text-base font-medium">Routines</Link>
+              <Link to="/progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Progress</Link>
+              {user?.user?.role === 'ADMIN' && (
+                <Link to="/admin" className="text-white/90 hover:text-indigo-300 text-base font-medium">Admin</Link>
               )}
               <button
                 onClick={logout}
@@ -41,20 +33,21 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                <span className="text-2xl font-extrabold tracking-wide text-white-400">Login</span>
-              </Link>
-              <Link to="/register" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                <span className="text-2xl font-extrabold tracking-wide text-white-400">Register</span>
-              </Link>
+              <Link to="/login" className="text-white/90 hover:text-indigo-300 text-base font-medium">Login</Link>
+
             </>
           )}
         </div>
 
         <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="text-white">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          <button 
+            onClick={() => setIsOpen(!isOpen)} 
+            className="text-white focus:outline-none transition-transform duration-200 transform hover:scale-110"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
           </button>
         </div>
@@ -62,52 +55,25 @@ const Navbar = () => {
 
       {isOpen && (
         <div className="md:hidden mt-4">
-          <ul className="flex flex-col space-y-4">
+          <ul className="flex flex-col space-y-3">
             {user ? (
               <>
-                <li>
-                  <Link to="/dashboard" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Dashboard</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/routines" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Routines</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/progress" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Progress</span>
-                  </Link>
-                </li>
-                {user.user.role === 'admin' && (
-                  <li>
-                    <Link to="/admin" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                      Admin
-                    </Link>
-                  </li>
+                <li><Link to="/dashboard" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Dashboard</Link></li>
+                <li><Link to="/routines" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Routines</Link></li>
+                <li><Link to="/progress" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Progress</Link></li>
+                {user?.user?.role === 'ADMIN' && (
+                  <li><Link to="/admin" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Admin</Link></li>
                 )}
                 <li>
-                  <button
-                    onClick={logout}
-                    className="bg-red-600 hover:bg-red-700 text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium"
-                  >
+                  <button onClick={logout} className="bg-red-600 hover:bg-red-700 text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium">
                     Logout
                   </button>
                 </li>
               </>
             ) : (
               <>
-                <li>
-                  <Link to="/login" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/register" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    Register
-                  </Link>
-                </li>
+                <li><Link to="/login" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Login</Link></li>
+
               </>
             )}
           </ul>
