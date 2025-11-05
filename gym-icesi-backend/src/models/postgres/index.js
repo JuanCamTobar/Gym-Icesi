@@ -1,8 +1,6 @@
 const { sequelize } = require('../../config/db.postgres');
 const User = require('./User');
 const Trainer = require('./Trainer');
-const Routine = require('./Routine');
-const Progress = require('./Progress');
 const StatisticsUser = require('./StatisticsUser');
 const StatisticsTrainer = require('./StatisticsTrainer');
 
@@ -23,12 +21,6 @@ const Student = require('./Student');
 const Enrollment = require('./Enrollment');
 
 // Define associations
-User.hasMany(Routine, { foreignKey: 'user_id', sourceKey: 'username' });
-Routine.belongsTo(User, { foreignKey: 'user_id', targetKey: 'username' });
-
-Routine.hasMany(Progress, { foreignKey: 'routine_id' });
-Progress.belongsTo(Routine, { foreignKey: 'routine_id' });
-
 User.hasMany(StatisticsUser, { foreignKey: 'user_id', sourceKey: 'username' });
 StatisticsUser.belongsTo(User, { foreignKey: 'user_id', targetKey: 'username' });
 
@@ -110,8 +102,6 @@ module.exports = {
   sequelize,
   User,
   Trainer,
-  Routine,
-  Progress,
   StatisticsUser,
   StatisticsTrainer,
   Area,

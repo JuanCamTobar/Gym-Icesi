@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import RoutinesPage from './pages/RoutinesPage';
+import AddRoutinePage from './pages/AddRoutinePage';
 import ProgressPage from './pages/ProgressPage';
 import AdminPage from './pages/AdminPage';
 import UserManagementPage from './pages/UserManagementPage';
@@ -36,6 +37,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <RoutinesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-routine"
+            element={
+              <ProtectedRoute>
+                <AddRoutinePage />
               </ProtectedRoute>
             }
           />

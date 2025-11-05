@@ -4,28 +4,32 @@ const ExerciseSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
-  },
-  type: {
-    type: String,
-    required: true,
+    trim: true,
   },
   description: {
     type: String,
+    trim: true,
+  },
+  type: {
+    type: String,
+    enum: ['Fuerza', 'Cardio', 'Flexibilidad', 'Equilibrio', 'Otro'],
     required: true,
   },
   duration: {
     type: String,
-    required: false,
+    trim: true,
   },
   difficulty: {
     type: String,
-    required: true,
+    enum: ['Principiante', 'Intermedio', 'Avanzado'],
+    trim: true,
   },
   video_url: {
     type: String,
-    required: false,
+    trim: true,
   },
+}, {
+  timestamps: true,
 });
 
 module.exports = mongoose.model('Exercise', ExerciseSchema);

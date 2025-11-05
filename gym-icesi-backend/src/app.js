@@ -44,6 +44,9 @@ app.use('/routines', require('./routes/routine.routes'));
 app.use('/progress', require('./routes/progress.routes'));
 app.use('/statistics', require('./routes/statistics.routes'));
 app.use('/reports', require('./routes/report.routes'));
+app.use('/predefined-routines', require('./routes/predefined-routine.routes'));
+app.use('/custom-routines', require('./routes/custom-routine.routes'));
+app.use('/exercises', require('./routes/exercise.routes'));
 app.use('/debug', require('./routes/debug.routes'));
 
 // Error Handling Middleware

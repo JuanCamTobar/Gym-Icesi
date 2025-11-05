@@ -19,13 +19,12 @@ exports.register = async (req, res) => {
       email,
       password_hash: hashedPassword,
       role,
-      department,
       program,
     });
 
     const payload = {
       user: {
-        id: user.id,
+        id: user.username,
         role: user.role,
       },
     };
@@ -61,7 +60,7 @@ exports.login = async (req, res) => {
 
     const payload = {
       user: {
-        id: user.id,
+        id: user.username,
         role: user.role,
       },
     };
@@ -72,7 +71,7 @@ exports.login = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES_IN },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
+        res.json({ token, user: { id: user.username, email: user.email, role: user.role } });
       }
     );
   } catch (err) {
