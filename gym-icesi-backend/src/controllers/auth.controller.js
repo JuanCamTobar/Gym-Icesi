@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
     user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password_hash: hashedPassword,
       role,
       department,
       program,
@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid Credentials' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(400).json({ msg: 'Invalid Credentials' });
     }

@@ -1,15 +1,10 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/db.postgres');
-const User = require('./User');
 
 const StatisticsUser = sequelize.define('StatisticsUser', {
   user_id: {
-    type: DataTypes.UUID,
+    type: DataTypes.STRING(30),
     primaryKey: true,
-    references: {
-      model: User,
-      key: 'id',
-    },
   },
   month: {
     type: DataTypes.STRING,
@@ -27,8 +22,5 @@ const StatisticsUser = sequelize.define('StatisticsUser', {
   tableName: 'statistics_users',
   timestamps: false,
 });
-
-StatisticsUser.belongsTo(User, { foreignKey: 'user_id' });
-User.hasMany(StatisticsUser, { foreignKey: 'user_id' });
 
 module.exports = StatisticsUser;

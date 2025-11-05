@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png'; // Import the logo
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -9,21 +10,22 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-lg font-bold">
-          Gym Icesi
+        <Link to="/" className="text-white text-lg font-bold flex items-center">
+          <img src={logo} alt="Gym Icesi Logo" className="h-20 w-20 mr-2" />
+          <span className="text-2xl font-extrabold tracking-wide text-white-400">Gym Icesi</span>
         </Link>
 
         <div className="hidden md:flex items-center space-x-4">
           {user ? (
             <>
               <Link to="/dashboard" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                Dashboard
+                <span className="text-2xl font-extrabold tracking-wide text-white-400">Dashboard</span>
               </Link>
               <Link to="/routines" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                Routines
+                <span className="text-2xl font-extrabold tracking-wide text-white-400">Routines</span>
               </Link>
               <Link to="/progress" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                Progress
+                <span className="text-2xl font-extrabold tracking-wide text-white-400">Progress</span>
               </Link>
               {user.user.role === 'admin' && (
                 <Link to="/admin" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
@@ -40,10 +42,10 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                Login
+                <span className="text-2xl font-extrabold tracking-wide text-white-400">Login</span>
               </Link>
               <Link to="/register" className="text-white hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
-                Register
+                <span className="text-2xl font-extrabold tracking-wide text-white-400">Register</span>
               </Link>
             </>
           )}
@@ -65,17 +67,17 @@ const Navbar = () => {
               <>
                 <li>
                   <Link to="/dashboard" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    Dashboard
+                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Dashboard</span>
                   </Link>
                 </li>
                 <li>
                   <Link to="/routines" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    Routines
+                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Routines</span>
                   </Link>
                 </li>
                 <li>
                   <Link to="/progress" className="text-white hover:text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
-                    Progress
+                    <span className="text-2xl font-extrabold tracking-wide text-white-400">Progress</span>
                   </Link>
                 </li>
                 {user.user.role === 'admin' && (
