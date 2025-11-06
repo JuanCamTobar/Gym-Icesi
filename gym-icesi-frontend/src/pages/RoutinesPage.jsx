@@ -6,8 +6,6 @@ import predefinedRoutineService from '../services/predefinedRoutineService';
 const RoutinesPage = () => {
   const [routines, setRoutines] = useState([]);
   const [predefinedRoutines, setPredefinedRoutines] = useState([]);
-  const [editingRoutineId, setEditingRoutineId] = useState(null);
-  const [editingRoutineName, setEditingRoutineName] = useState('');
   const [error, setError] = useState('');
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedRoutineDetails, setSelectedRoutineDetails] = useState(null);
@@ -20,6 +18,10 @@ const RoutinesPage = () => {
 
   const handleNavigateToAddRoutine = () => {
     navigate('/add-routine');
+  };
+
+  const handleNavigateToEditRoutine = (routineId) => {
+    navigate(`/edit-routine/${routineId}`);
   };
 
   const fetchRoutines = async () => {
@@ -37,17 +39,6 @@ const RoutinesPage = () => {
       setPredefinedRoutines(response.data);
     } catch (err) {
       setError('No se pudieron obtener las rutinas predefinidas.');
-    }
-  };
-
-  const handleUpdateRoutine = async (id) => {
-    try {
-      await customRoutineService.updateCustomRoutine(id, editingRoutineName);
-      setEditingRoutineId(null);
-      setEditingRoutineName('');
-      fetchRoutines();
-    } catch (err) {
-      setError('No se pudo actualizar la rutina.');
     }
   };
 
@@ -122,57 +113,27 @@ const RoutinesPage = () => {
                 key={routine._id}
                 className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col md:flex-row justify-between items-center"
               >
-                {editingRoutineId === routine._id ? (
-                  <div className="flex flex-col md:flex-row items-center gap-3 w-full">
-                    <input
-                      type="text"
-                      value={editingRoutineName}
-                      onChange={(e) => setEditingRoutineName(e.target.value)}
-                      className="flex-1 border border-gray-300 rounded-xl p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleUpdateRoutine(routine._id)}
-                        className="bg-indigo-600 text-white px-4 py-1 rounded-lg hover:bg-indigo-700 transition"
-                      >
-                        Guardar
-                      </button>
-                      <button
-                        onClick={() => setEditingRoutineId(null)}
-                        className="bg-gray-200 text-gray-700 px-4 py-1 rounded-lg hover:bg-gray-300 transition"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <span className="font-semibold text-gray-800">{routine.name}</span>
-                    <div className="flex gap-3 mt-3 md:mt-0">
-                      <button
-                        onClick={() => handleShowDetails(routine)}
-                        className="bg-blue-100 text-blue-700 px-4 py-1 rounded-lg hover:bg-blue-200 transition"
-                      >
-                        Más detalles
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingRoutineId(routine._id);
-                          setEditingRoutineName(routine.name);
-                        }}
-                        className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-lg hover:bg-indigo-200 transition"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleDeleteRoutine(routine._id)}
-                        className="bg-red-100 text-red-700 px-4 py-1 rounded-lg hover:bg-red-200 transition"
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </>
-                )}
+                <span className="font-semibold text-gray-800">{routine.name}</span>
+                <div className="flex gap-3 mt-3 md:mt-0">
+                  <button
+                    onClick={() => handleShowDetails(routine)}
+                    className="bg-blue-100 text-blue-700 px-4 py-1 rounded-lg hover:bg-blue-200 transition"
+                  >
+                    Más detalles
+                  </button>
+                  <button
+                    onClick={() => handleNavigateToEditRoutine(routine._id)}
+                    className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-lg hover:bg-indigo-200 transition"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleDeleteRoutine(routine._id)}
+                    className="bg-red-100 text-red-700 px-4 py-1 rounded-lg hover:bg-red-200 transition"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
             ))
           ) : (
@@ -223,34 +184,51 @@ const RoutinesPage = () => {
           )}
         </div>
 
-        {/* Routine Details Modal */}
         {showDetailsModal && selectedRoutineDetails && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-            <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full mx-4 my-8">
-              <h3 className="text-2xl font-bold text-indigo-600 mb-6 text-center">
-                Detalles de la Rutina: {selectedRoutineDetails.name}
-              </h3>
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl mx-4 my-8 relative animate-fadeIn">
+              
+              {/* Botón cerrar */}
+              <button
+                onClick={handleCloseDetailsModal}
+                className="absolute top-4 right-4 text-gray-500 hover:text-indigo-600 transition text-2xl"
+                aria-label="Cerrar"
+              >
+                &times;
+              </button>
 
-              <div className="space-y-6">
+              {/* Título */}
+              <h3 className="text-2xl font-bold text-indigo-700 mb-2 text-center break-words">
+                Detalles de la Rutina
+              </h3>
+              <p className="text-center text-gray-600 font-medium mb-6 break-words">
+                {selectedRoutineDetails.name}
+              </p>
+
+              {/* Contenido con scroll si es largo */}
+              <div className="max-h-[65vh] overflow-y-auto pr-2 space-y-6">
                 {selectedRoutineDetails.exercises.length > 0 ? (
                   selectedRoutineDetails.exercises.map((ex, index) => (
-                    <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-lg text-gray-800 mb-2">{ex.exercise_id.name}</h4>
-                      {ex.exercise_id.description && <p className="text-sm text-gray-700">Descripción: {ex.exercise_id.description}</p>}
-                      {ex.exercise_id.type && <p className="text-sm text-gray-700">Tipo: {ex.exercise_id.type}</p>}
-                      {ex.exercise_id.duration && <p className="text-sm text-gray-700">Duración: {ex.exercise_id.duration}</p>}
-                      {ex.exercise_id.difficulty && <p className="text-sm text-gray-700">Dificultad: {ex.exercise_id.difficulty}</p>}
-                      {ex.sets && <p className="text-sm text-gray-700">Series: {ex.sets}</p>}
-                      {ex.reps && <p className="text-sm text-gray-700">Repeticiones: {ex.reps}</p>}
-                      {ex.weight && <p className="text-sm text-gray-700">Peso: {ex.weight} kg</p>}
+                    <div
+                      key={index}
+                      className="bg-gray-50 p-5 rounded-xl border border-gray-200 hover:shadow-md transition space-y-1"
+                    >
+                      <h4 className="font-semibold text-lg text-gray-800">{ex.exercise_id.name}</h4>
+                      {ex.exercise_id.description && <p className="text-sm text-gray-700 break-words"><span className="font-medium text-gray-800">Descripción:</span> {ex.exercise_id.description}</p>}
+                      {ex.exercise_id.type && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Tipo:</span> {ex.exercise_id.type}</p>}
+                      {ex.exercise_id.duration && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Duración:</span> {ex.exercise_id.duration}</p>}
+                      {ex.exercise_id.difficulty && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Dificultad:</span> {ex.exercise_id.difficulty}</p>}
+                      {ex.sets && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Series:</span> {ex.sets}</p>}
+                      {ex.reps && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Repeticiones:</span> {ex.reps}</p>}
+                      {ex.weight && <p className="text-sm text-gray-700"><span className="font-medium text-gray-800">Peso:</span> {ex.weight} kg</p>}
                       {ex.exercise_id.video_url && (
                         <a
                           href={ex.exercise_id.video_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-indigo-500 hover:underline mt-2 block"
+                          className="inline-block text-sm text-indigo-600 hover:text-indigo-800 hover:underline mt-2"
                         >
-                          Ver Video
+                          🎥 Ver Video
                         </a>
                       )}
                     </div>
@@ -260,11 +238,12 @@ const RoutinesPage = () => {
                 )}
               </div>
 
-              <div className="flex justify-end mt-8">
+              {/* Botón cerrar inferior */}
+              <div className="flex justify-center mt-8">
                 <button
                   type="button"
                   onClick={handleCloseDetailsModal}
-                  className="bg-indigo-600 text-white px-5 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition"
+                  className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition"
                 >
                   Cerrar
                 </button>
@@ -272,6 +251,7 @@ const RoutinesPage = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

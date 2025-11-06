@@ -39,10 +39,52 @@ exports.getTrainerUsers = async (req, res) => {
 
     const users = await User.findAll({ 
       where: { trainerId: req.params.id }, 
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password_hash'] },
       include: [Student, Employee]
     });
     res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// @route   GET /api/trainer/assigned-students
+// @desc    Get students assigned to the logged-in instructor
+// @access  Private (Instructor only)
+exports.getAssignedStudents = async (req, res) => {
+  try {
+    const instructorUsername = req.user.id;
+
+    // 1. Find the User record for the logged-in instructor
+    const instructorUser = await User.findOne({ where: { username: instructorUsername } });
+    if (!instructorUser || instructorUser.role !== 'EMPLOYEE' || !instructorUser.employee_id) {
+      return res.status(403).json({ msg: 'Not authorized: User is not an instructor' });
+    }
+
+    // 2. Find the Employee record for this instructor
+    const instructorEmployee = await Employee.findByPk(instructorUser.employee_id);
+    if (!instructorEmployee || instructorEmployee.employee_type !== 'Instructor') {
+      return res.status(403).json({ msg: 'Not authorized: Employee is not an instructor type' });
+    }
+
+    // 3. Find the Trainer record associated with this Employee
+    const trainer = await Trainer.findOne({ where: { employee_id: instructorEmployee.id } });
+    if (!trainer) {
+      return res.status(404).json({ msg: 'Trainer profile not found for this instructor' });
+    }
+
+    // 4. Find all User records (students) assigned to this Trainer
+    const assignedStudents = await User.findAll({
+      where: {
+        trainerId: trainer.id,
+        role: 'STUDENT',
+      },
+      attributes: { exclude: ['password_hash'] },
+      include: [Student], // Include Student details
+    });
+
+    res.json(assignedStudents);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

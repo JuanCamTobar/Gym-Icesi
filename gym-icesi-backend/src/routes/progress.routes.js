@@ -2,16 +2,20 @@ const express = require('express');
 const router = express.Router();
 const progressController = require('../controllers/progress.controller');
 const auth = require('../middlewares/auth');
-const authorize = require('../middlewares/authorize');
 
-// @route   GET /progress/user/:id
-// @desc    Get progress for a specific user
-// @access  Private (Admin or owner)
-router.get('/user/:id', auth, progressController.getProgressByUser);
+// @route   POST /api/progress
+// @desc    Record daily progress for a routine
+// @access  Private
+router.post('/', auth, progressController.recordDailyProgress);
 
-// @route   GET /progress/routine/:id
-// @desc    Get progress for a specific routine
-// @access  Private (Admin or owner of the routine)
-router.get('/routine/:id', auth, progressController.getProgressByRoutine);
+// @route   GET /api/progress/routine/:routineId
+// @desc    Get progress for a specific routine by the authenticated user
+// @access  Private
+router.get('/routine/:routineId', auth, progressController.getProgressByRoutine);
+
+// @route   GET /api/progress/routine/:routineId/student/:studentUsername
+// @desc    Get progress for a specific routine and student
+// @access  Private (Instructor authorized to view this student)
+router.get('/routine/:routineId/student/:studentUsername', auth, progressController.getProgressByRoutineAndStudent);
 
 module.exports = router;

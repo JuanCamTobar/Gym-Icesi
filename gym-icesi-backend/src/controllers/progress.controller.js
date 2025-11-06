@@ -1,51 +1,85 @@
-const { Progress, Routine, User } = require('../models/postgres');
+const ProgressTracking = require('../models/mongo/ProgressTracking');
+const CustomRoutine = require('../models/mongo/CustomRoutine');
 
-// Get progress for a specific user
-exports.getProgressByUser = async (req, res) => {
+// @route   POST /api/progress
+// @desc    Record daily progress for a routine
+// @access  Private
+exports.recordDailyProgress = async (req, res) => {
+  const { routine_id, date, exercises_progress } = req.body;
+  const userId = req.user.id;
+
   try {
-    const { id: userId } = req.params;
-
-    // Ensure the requesting user is authorized to view this progress
-    if (req.user.role !== 'admin' && req.user.id !== userId) {
-      return res.status(403).json({ msg: 'Not authorized to view this users progress' });
+    // Check if the routine exists and belongs to the user
+    const routine = await CustomRoutine.findById(routine_id);
+    if (!routine || routine.user_id !== userId) {
+      return res.status(404).json({ msg: 'Routine not found or not authorized' });
     }
 
-    const routines = await Routine.findAll({
-      where: { user_id: userId },
-      include: [{
-        model: Progress,
-        attributes: ['date', 'reps', 'time', 'effort'],
-      }],
+    // Create a new progress tracking entry
+    const newProgress = new ProgressTracking({
+      user_id: userId,
+      routine_id,
+      date: new Date(date),
+      exercises_progress,
     });
 
-    res.json(routines);
+    await newProgress.save();
+    res.status(201).json(newProgress);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
 };
 
-// Get progress for a specific routine
+// @route   GET /api/progress/routine/:routineId
+// @desc    Get progress for a specific routine by the authenticated user
+// @access  Private
 exports.getProgressByRoutine = async (req, res) => {
+  const { routineId } = req.params;
+  const userId = req.user.id;
+
   try {
-    const { id: routineId } = req.params;
-
-    const routine = await Routine.findByPk(routineId);
-    if (!routine) {
-      return res.status(404).json({ msg: 'Routine not found' });
+    // Check if the routine exists and belongs to the user
+    const routine = await CustomRoutine.findById(routineId);
+    if (!routine || routine.user_id !== userId) {
+      return res.status(404).json({ msg: 'Routine not found or not authorized' });
     }
 
-    // Ensure the requesting user is authorized to view this routine's progress
-    if (req.user.role !== 'admin' && req.user.id !== routine.user_id) {
-      return res.status(403).json({ msg: 'Not authorized to view this routines progress' });
+    const progressData = await ProgressTracking.find({ routine_id: routineId, user_id: userId })
+      .populate({
+        path: 'exercises_progress.exercise_id',
+        model: 'Exercise',
+      })
+      .sort({ date: 1 }); // Sort by date ascending
+
+    res.json(progressData);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// @route   GET /api/progress/routine/:routineId/student/:studentUsername
+// @desc    Get progress for a specific routine and student
+// @access  Private (Instructor authorized to view this student)
+exports.getProgressByRoutineAndStudent = async (req, res) => {
+  const { routineId, studentUsername } = req.params;
+
+  try {
+    // Check if the routine exists and belongs to the student
+    const routine = await CustomRoutine.findById(routineId);
+    if (!routine || routine.user_id !== studentUsername) {
+      return res.status(404).json({ msg: 'Routine not found or not authorized for this student' });
     }
 
-    const progress = await Progress.findAll({
-      where: { routine_id: routineId },
-      order: [['date', 'ASC']],
-    });
+    const progressData = await ProgressTracking.find({ routine_id: routineId, user_id: studentUsername })
+      .populate({
+        path: 'exercises_progress.exercise_id',
+        model: 'Exercise',
+      })
+      .sort({ date: 1 }); // Sort by date ascending
 
-    res.json(progress);
+    res.json(progressData);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

@@ -23,4 +23,9 @@ router.get('/', auth, authorize('ADMIN', 'EMPLOYEE'), trainerController.getTrain
 // @access  Private (Admin or owner trainer)
 router.get('/:id/users', auth, authorize('ADMIN', 'EMPLOYEE'), trainerController.getTrainerUsers);
 
+// @route   GET /api/trainer/assigned-students
+// @desc    Get students assigned to the logged-in instructor
+// @access  Private (Instructor only)
+router.get('/assigned-students', auth, authorize('EMPLOYEE'), trainerController.getAssignedStudents);
+
 module.exports = router;

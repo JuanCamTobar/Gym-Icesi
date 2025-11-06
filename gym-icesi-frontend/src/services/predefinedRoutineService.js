@@ -14,8 +14,13 @@ const getPredefinedRoutines = () => {
   return axios.get(API_URL, { headers: getAuthHeader() });
 };
 
+const createPredefinedRoutine = (routineData) => {
+  return axios.post(API_URL, routineData, { headers: getAuthHeader() });
+};
+
 const predefinedRoutineService = {
   getPredefinedRoutines,
+  createPredefinedRoutine,
 };
 
 export default predefinedRoutineService;

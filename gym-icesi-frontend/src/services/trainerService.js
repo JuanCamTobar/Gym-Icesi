@@ -18,9 +18,14 @@ const getTrainerUsers = (id) => {
   return axios.get(`${API_URL}/${id}/users`, { headers: getAuthHeader() });
 };
 
+const getAssignedStudents = () => {
+  return axios.get(`${API_URL}/assigned-students`, { headers: getAuthHeader() });
+};
+
 const trainerService = {
   getTrainers,
   getTrainerUsers,
+  getAssignedStudents,
 };
 
 export default trainerService;

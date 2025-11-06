@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/postgres').User;
+const Employee = require('../models/postgres').Employee; // Import Employee model
 
 exports.register = async (req, res) => {
   const { name, email, password, role, department, program } = req.body;
@@ -22,10 +23,19 @@ exports.register = async (req, res) => {
       program,
     });
 
+    let employeeType = null;
+    if (user.role === 'EMPLOYEE' && user.employee_id) {
+      const employee = await Employee.findByPk(user.employee_id);
+      if (employee) {
+        employeeType = employee.employee_type;
+      }
+    }
+
     const payload = {
       user: {
         id: user.username,
         role: user.role,
+        employee_type: employeeType, // Include employee_type in payload
       },
     };
 
@@ -58,10 +68,19 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid Credentials' });
     }
 
+    let employeeType = null;
+    if (user.role === 'EMPLOYEE' && user.employee_id) {
+      const employee = await Employee.findByPk(user.employee_id);
+      if (employee) {
+        employeeType = employee.employee_type;
+      }
+    }
+
     const payload = {
       user: {
         id: user.username,
         role: user.role,
+        employee_type: employeeType, // Include employee_type in payload
       },
     };
 
@@ -71,7 +90,7 @@ exports.login = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES_IN },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, user: { id: user.username, email: user.email, role: user.role } });
+        res.json({ token, user: { id: user.username, email: user.email, role: user.role, employee_type: employeeType } });
       }
     );
   } catch (err) {

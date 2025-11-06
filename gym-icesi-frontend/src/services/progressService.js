@@ -10,17 +10,22 @@ const getAuthHeader = () => {
   return {};
 };
 
-const getProgressByUser = (userId) => {
-  return axios.get(`${API_URL}/user/${userId}`, { headers: getAuthHeader() });
-};
-
 const getProgressByRoutine = (routineId) => {
   return axios.get(`${API_URL}/routine/${routineId}`, { headers: getAuthHeader() });
 };
 
+const recordDailyProgress = (progressData) => {
+  return axios.post(API_URL, progressData, { headers: getAuthHeader() });
+};
+
+const getProgressByRoutineAndStudent = (routineId, studentUsername) => {
+  return axios.get(`${API_URL}/routine/${routineId}/student/${studentUsername}`, { headers: getAuthHeader() });
+};
+
 const progressService = {
-  getProgressByUser,
   getProgressByRoutine,
+  recordDailyProgress,
+  getProgressByRoutineAndStudent,
 };
 
 export default progressService;

@@ -22,8 +22,12 @@ const createCustomRoutineWithExercises = (name, exerciseIds) => {
   return axios.post(API_URL, { name, exercises: exerciseIds }, { headers: getAuthHeader() });
 };
 
-const updateCustomRoutine = (id, name) => {
-  return axios.put(`${API_URL}/${id}`, { name }, { headers: getAuthHeader() });
+const getCustomRoutineById = (id) => {
+  return axios.get(`${API_URL}/${id}`, { headers: getAuthHeader() });
+};
+
+const updateCustomRoutine = (id, name, exercises) => {
+  return axios.put(`${API_URL}/${id}`, { name, exercises }, { headers: getAuthHeader() });
 };
 
 const deleteCustomRoutine = (id) => {
@@ -34,13 +38,19 @@ const adoptPredefinedRoutine = (predefinedRoutineId) => {
   return axios.post(`${API_URL}/adopt`, { predefinedRoutineId }, { headers: getAuthHeader() });
 };
 
+const getCustomRoutinesByStudent = (studentUsername) => {
+  return axios.get(`${API_URL}/student/${studentUsername}`, { headers: getAuthHeader() });
+};
+
 const customRoutineService = {
   getCustomRoutines,
+  getCustomRoutineById,
   createCustomRoutine,
   updateCustomRoutine,
   deleteCustomRoutine,
   adoptPredefinedRoutine,
   createCustomRoutineWithExercises,
+  getCustomRoutinesByStudent,
 };
 
 export default customRoutineService;

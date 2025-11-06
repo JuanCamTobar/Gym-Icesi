@@ -4,6 +4,10 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import RoutinesPage from './pages/RoutinesPage';
 import AddRoutinePage from './pages/AddRoutinePage';
+import EditRoutinePage from './pages/EditRoutinePage';
+import StudentsProgressPage from './pages/StudentsProgressPage';
+import ManageTrainerExercisesPage from './pages/ManageTrainerExercisesPage';
+import StudentDetailsPage from './pages/StudentDetailsPage';
 import ProgressPage from './pages/ProgressPage';
 import AdminPage from './pages/AdminPage';
 import UserManagementPage from './pages/UserManagementPage';
@@ -45,6 +49,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddRoutinePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-routine/:id"
+            element={
+              <ProtectedRoute>
+                <EditRoutinePage />
               </ProtectedRoute>
             }
           />
@@ -94,6 +106,30 @@ function App() {
               <AdminRoute>
                 <ReportsPage />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/trainer/students-progress"
+            element={
+              <ProtectedRoute>
+                <StudentsProgressPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trainer/manage-exercises"
+            element={
+              <ProtectedRoute>
+                <ManageTrainerExercisesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trainer/student-details/:studentUsername"
+            element={
+              <ProtectedRoute>
+                <StudentDetailsPage />
+              </ProtectedRoute>
             }
           />
         </Routes>

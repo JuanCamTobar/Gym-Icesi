@@ -14,8 +14,13 @@ const getExercises = () => {
   return axios.get(`${API_URL}/exercises`, { headers: getAuthHeader() });
 };
 
+const createExercise = (exerciseData) => {
+  return axios.post(`${API_URL}/exercises`, exerciseData, { headers: getAuthHeader() });
+};
+
 const exerciseService = {
   getExercises,
+  createExercise,
 };
 
 export default exerciseService;

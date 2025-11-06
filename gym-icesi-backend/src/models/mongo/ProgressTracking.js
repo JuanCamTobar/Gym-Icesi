@@ -2,47 +2,38 @@ const mongoose = require('mongoose');
 
 const ProgressTrackingSchema = new mongoose.Schema({
   user_id: {
-    type: String, 
+    type: String,
+    required: true,
+  },
+  routine_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CustomRoutine',
     required: true,
   },
   date: {
     type: Date,
+    required: true,
     default: Date.now,
-    required: true,
   },
-  routine_id: {
-    type: String, //
-    required: false,
-  },
-  exercise_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Exercise',
-    required: true,
-  },
-  reps: {
-    type: Number,
-    required: false,
-  },
-  sets: {
-    type: Number,
-    required: false,
-  },
-  weight: {
-    type: Number,
-    required: false,
-  },
-  duration: {
-    type: Number, // in minutes or seconds
-    required: false,
-  },
-  effort_level: {
-    type: Number, // e.g., 1-10
-    required: false,
-  },
-  notes: {
-    type: String,
-    required: false,
-  },
+  exercises_progress: [
+    {
+      exercise_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Exercise',
+        required: true,
+      },
+      completion_status: {
+        type: String,
+        enum: ['completed_totally', 'different_completion', 'not_completed'],
+        default: 'not_completed',
+      },
+      sets: { type: Number },
+      reps: { type: Number },
+      weight: { type: Number },
+      duration: { type: Number }, // in minutes
+      notes: { type: String },
+    },
+  ],
 });
 
 module.exports = mongoose.model('ProgressTracking', ProgressTrackingSchema);

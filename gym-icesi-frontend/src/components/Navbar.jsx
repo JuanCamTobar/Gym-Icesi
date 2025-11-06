@@ -7,6 +7,8 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log('Current user in Navbar:', user);
+
   return (
     <nav className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 shadow-md">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -23,6 +25,12 @@ const Navbar = () => {
               <Link to="/progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Progress</Link>
               {user?.user?.role === 'ADMIN' && (
                 <Link to="/admin" className="text-white/90 hover:text-indigo-300 text-base font-medium">Admin</Link>
+              )}
+              {user?.user?.role === 'EMPLOYEE' && user?.user?.employee_type === 'Instructor' && (
+                <>
+                  <Link to="/trainer/students-progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Estudiantes</Link>
+                  <Link to="/trainer/manage-exercises" className="text-white/90 hover:text-indigo-300 text-base font-medium">Gestionar Ejercicios</Link>
+                </>
               )}
               <button
                 onClick={logout}
@@ -63,6 +71,12 @@ const Navbar = () => {
                 <li><Link to="/progress" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Progress</Link></li>
                 {user?.user?.role === 'ADMIN' && (
                   <li><Link to="/admin" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Admin</Link></li>
+                )}
+                {user?.user?.role === 'EMPLOYEE' && user?.user?.employee_type === 'Instructor' && (
+                  <>
+                    <li><Link to="/trainer/students-progress" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Estudiantes</Link></li>
+                    <li><Link to="/trainer/manage-exercises" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Gestionar Ejercicios</Link></li>
+                  </>
                 )}
                 <li>
                   <button onClick={logout} className="bg-red-600 hover:bg-red-700 text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium">
