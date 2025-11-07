@@ -27,6 +27,7 @@ exports.assignTrainer = async (req, res) => {
     }
 
     user.trainerId = trainerId;
+    user.trainerAssignedAt = new Date();
     await user.save();
 
     // Update trainer statistics

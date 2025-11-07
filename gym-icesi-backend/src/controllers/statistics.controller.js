@@ -1,4 +1,4 @@
-const { RoutineLog, StatisticsTrainer, User } = require('../models/postgres');
+const { RoutineLog, StatisticsTrainer, User, Trainer } = require('../models/postgres');
 const ProgressTracking = require('../models/mongo/ProgressTracking');
 const { Op, fn, col, literal } = require('sequelize');
 
@@ -95,40 +95,74 @@ exports.getTrainerStats = async (req, res) => {
 // @access  Private (Admin)
 exports.getAdminOverview = async (req, res) => {
   try {
-    // 1. Total routines started per month
+    // 1. Routines started per day, grouped by month
     const routineStats = await RoutineLog.findAll({
       attributes: [
         [fn('to_char', col('started_at'), 'YYYY-MM'), 'month'],
-        [fn('COUNT', col('id')), 'totalRoutines'],
+        [fn('EXTRACT', literal('DAY FROM started_at')), 'day'],
+        [fn('COUNT', col('id')), 'count'],
       ],
-      group: ['month'],
+      group: ['month', 'day'],
       order: [[literal('month'), 'DESC']],
+      raw: true,
     });
 
-    // 2. Total new assignments per month
-    const assignmentStats = await StatisticsTrainer.findAll({
+    // 2. New assignments per day, grouped by month
+    const assignmentStats = await User.findAll({
       attributes: [
-        'month',
-        [fn('SUM', col('new_assignments')), 'totalAssignments'],
+        [fn('to_char', col('trainerAssignedAt'), 'YYYY-MM'), 'month'],
+        [fn('EXTRACT', literal('DAY FROM "trainerAssignedAt"')), 'day'],
+        [fn('COUNT', col('username')), 'count'],
       ],
-      group: ['month'],
+      where: { trainerId: { [Op.ne]: null } }, // Count only users that have a trainer
+      group: ['month', 'day'],
       order: [[literal('month'), 'DESC']],
+      raw: true,
     });
 
-    // 3. Total follow-ups (comments) by trainers per month
-    const followupStats = await StatisticsTrainer.findAll({
-      attributes: [
-        'month',
-        [fn('SUM', col('followups')), 'totalFollowups'],
-      ],
-      group: ['month'],
-      order: [[literal('month'), 'DESC']],
-    });
+    // 3. Follow-ups (comments) by trainers per day, grouped by month
+    const followupEntries = await ProgressTracking.aggregate([
+      { $match: { trainer_comment: { $ne: null, $ne: '' } } },
+      {
+        $group: {
+          _id: {
+            month: { $dateToString: { format: '%Y-%m', date: '$date' } },
+            day: { $dayOfMonth: '$date' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { '_id.month': -1, '_id.day': 1 } },
+    ]);
+
+    // Helper to group daily counts by month
+    const groupDailyCounts = (stats) => {
+      const result = {};
+      stats.forEach(stat => {
+        const { month, day, count } = stat;
+        if (!result[month]) {
+          result[month] = { month, dailyCounts: [] };
+        }
+        // Ensure day is an integer
+        result[month].dailyCounts.push({ day: parseInt(day, 10), count: parseInt(count, 10) });
+      });
+      return Object.values(result);
+    };
+
+    const routines = groupDailyCounts(routineStats);
+    const assignments = groupDailyCounts(assignmentStats);
+    // Adapt MongoDB aggregation result to the expected format
+    const followups = groupDailyCounts(followupEntries.map(item => ({
+      month: item._id.month,
+      day: item._id.day,
+      count: item.count,
+    })));
+
 
     res.json({
-      routines: routineStats,
-      assignments: assignmentStats,
-      followups: followupStats,
+      routines: routines,
+      assignments: assignments,
+      followups: followups,
     });
   } catch (err) {
     console.error(err.message);
