@@ -1,5 +1,6 @@
 const CustomRoutine = require('../models/mongo/CustomRoutine');
 const PredefinedRoutine = require('../models/mongo/PredefinedRoutine');
+const { RoutineLog } = require('../models/postgres');
 
 // @route   POST /api/custom-routines
 // @desc    Create a new custom routine
@@ -22,6 +23,13 @@ exports.createCustomRoutine = async (req, res) => {
     });
 
     const routine = await newCustomRoutine.save();
+
+    // Log the routine start event for statistics
+    await RoutineLog.create({
+      user_id: userId,
+      routine_name: routine.name,
+      routine_type: 'Custom',
+    });
     res.status(201).json(routine);
   } catch (err) {
     console.error(err.message);
@@ -144,6 +152,13 @@ exports.adoptPredefinedRoutine = async (req, res) => {
     });
 
     await newCustomRoutine.save();
+
+    // Log the routine start event for statistics
+    await RoutineLog.create({
+      user_id: userId,
+      routine_name: newCustomRoutine.name,
+      routine_type: 'Predefined',
+    });
 
     res.json(newCustomRoutine);
   } catch (err) {

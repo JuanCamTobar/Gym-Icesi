@@ -1,4 +1,4 @@
-const { User, Student, Employee } = require('../models/postgres');
+const { User, Student, Employee, StatisticsTrainer } = require('../models/postgres');
 const bcrypt = require('bcryptjs');
 
 // Get all users
@@ -28,6 +28,18 @@ exports.assignTrainer = async (req, res) => {
 
     user.trainerId = trainerId;
     await user.save();
+
+    // Update trainer statistics
+    const month = new Date().toISOString().slice(0, 7); // Format: YYYY-MM
+    const [stats, created] = await StatisticsTrainer.findOrCreate({
+      where: { trainer_id: trainerId, month: month },
+      defaults: { new_assignments: 1, followups: 0 }
+    });
+
+    if (!created) {
+      stats.new_assignments += 1;
+      await stats.save();
+    }
 
     res.json({ msg: 'Trainer assigned successfully' });
   } catch (err) {

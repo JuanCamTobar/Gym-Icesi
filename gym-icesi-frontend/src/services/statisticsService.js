@@ -10,17 +10,27 @@ const getAuthHeader = () => {
   return {};
 };
 
-const getUserStatistics = (month) => {
-  return axios.get(`${API_URL}/users/${month}`, { headers: getAuthHeader() });
+const getUserStartedRoutines = () => {
+  return axios.get(`${API_URL}/user/routines`, { headers: getAuthHeader() });
 };
 
-const getTrainerStatistics = (month) => {
-  return axios.get(`${API_URL}/trainers/${month}`, { headers: getAuthHeader() });
+const getUserProgressCalendar = (month) => {
+  return axios.get(`${API_URL}/user/progress-calendar?month=${month}`, { headers: getAuthHeader() });
+};
+
+const getTrainerStats = () => {
+  return axios.get(`${API_URL}/trainer/my-stats`, { headers: getAuthHeader() });
+};
+
+const getAdminOverview = () => {
+  return axios.get(`${API_URL}/admin/overview`, { headers: getAuthHeader() });
 };
 
 const statisticsService = {
-  getUserStatistics,
-  getTrainerStatistics,
+  getUserStartedRoutines,
+  getUserProgressCalendar,
+  getTrainerStats,
+  getAdminOverview,
 };
 
 export default statisticsService;

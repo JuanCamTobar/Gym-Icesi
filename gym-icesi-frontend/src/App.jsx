@@ -69,6 +69,14 @@ function App() {
             }
           />
           <Route
+            path="/statistics"
+            element={
+              <ProtectedRoute>
+                <StatisticsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin"
             element={
               <AdminRoute>
@@ -92,14 +100,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route
-            path="/admin/statistics"
-            element={
-              <AdminRoute>
-                <StatisticsPage />
-              </AdminRoute>
-            }
-          />
+
           <Route
             path="/admin/reports"
             element={

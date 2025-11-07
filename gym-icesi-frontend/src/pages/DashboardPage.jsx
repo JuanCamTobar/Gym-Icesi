@@ -72,7 +72,7 @@ const DashboardPage = () => {
                     </svg>
                     Gestión de Entrenadores
                   </Link>
-                  <Link to="/admin/statistics" className="flex flex-col items-center justify-center p-6 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition transform hover:scale-105">
+                  <Link to="/statistics" className="flex flex-col items-center justify-center p-6 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition transform hover:scale-105">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
@@ -147,6 +147,15 @@ const DashboardPage = () => {
                     <p className="text-gray-700">No hay rutinas prediseñadas disponibles.</p>
                   )}
                   <Link to="/routines" className="mt-4 inline-block bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition">Explorar Rutinas Prediseñadas</Link>
+                </div>
+
+                {/* Mis Estadísticas */}
+                <div className="bg-yellow-50 p-6 rounded-lg shadow-md">
+                  <h3 className="text-2xl font-bold text-yellow-600 mb-4">Mis Estadísticas</h3>
+                  <p className="text-gray-700 mb-4">Visualiza tu progreso y el resumen de tus actividades.</p>
+                  <Link to="/statistics" className="mt-4 inline-block bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition">
+                    Ver Estadísticas
+                  </Link>
                 </div>
               </div>
             )}

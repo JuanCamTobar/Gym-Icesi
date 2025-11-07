@@ -1,7 +1,6 @@
 const ProgressTracking = require('../models/mongo/ProgressTracking');
 const CustomRoutine = require('../models/mongo/CustomRoutine');
-const User = require('../models/postgres').User;
-const Employee = require('../models/postgres').Employee;
+const { User, Employee, Trainer, StatisticsTrainer } = require('../models/postgres');
 
 // @route   POST /api/progress
 // @desc    Record daily progress for a routine
@@ -122,6 +121,31 @@ exports.addComment = async (req, res) => {
     progress.comments.push(newComment);
 
     await progress.save();
+
+    // --- Update trainer statistics for follow-ups ---
+    try {
+      const user = await User.findOne({ where: { username: trainerId } });
+      if (user && user.employee_id) {
+        const trainer = await Trainer.findOne({ where: { employee_id: user.employee_id } });
+
+        if (trainer) {
+          const month = new Date().toISOString().slice(0, 7); // Format: YYYY-MM
+          const [stats, created] = await StatisticsTrainer.findOrCreate({
+            where: { trainer_id: trainer.id, month: month },
+            defaults: { new_assignments: 0, followups: 1 }
+          });
+
+          if (!created) {
+            stats.followups += 1;
+            await stats.save();
+          }
+        }
+      }
+    } catch (statErr) {
+      // Log the error but don't fail the main request
+      console.error('Error updating trainer statistics:', statErr);
+    }
+    // --- End of statistics logic ---
 
     res.json(progress);
   } catch (err) {

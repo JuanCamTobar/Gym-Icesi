@@ -19,6 +19,7 @@ const ContractType = require('./ContractType');
 const EmployeeType = require('./EmployeeType');
 const Student = require('./Student');
 const Enrollment = require('./Enrollment');
+const RoutineLog = require('./RoutineLog');
 
 // Define associations
 User.hasMany(StatisticsUser, { foreignKey: 'user_id', sourceKey: 'username' });
@@ -89,6 +90,9 @@ Student.hasOne(User, { foreignKey: 'student_id' });
 User.belongsTo(Employee, { foreignKey: 'employee_id' });
 Employee.hasOne(User, { foreignKey: 'employee_id' });
 
+User.hasMany(RoutineLog, { foreignKey: 'user_id', sourceKey: 'username' });
+RoutineLog.belongsTo(User, { foreignKey: 'user_id', targetKey: 'username' });
+
 const syncModels = async () => {
   try {
     await sequelize.sync({ alter: true }); // Use { alter: true } to update table schemas without dropping data
@@ -118,5 +122,6 @@ module.exports = {
   EmployeeType,
   Student,
   Enrollment,
+  RoutineLog,
   syncModels,
 };

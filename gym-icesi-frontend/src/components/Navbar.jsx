@@ -23,6 +23,7 @@ const Navbar = () => {
               <Link to="/dashboard" className="text-white/90 hover:text-indigo-300 text-base font-medium">Dashboard</Link>
               <Link to="/routines" className="text-white/90 hover:text-indigo-300 text-base font-medium">Routines</Link>
               <Link to="/progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Progress</Link>
+              <Link to="/statistics" className="text-white/90 hover:text-indigo-300 text-base font-medium">Statistics</Link>
               {user?.user?.role === 'ADMIN' && (
                 <Link to="/admin" className="text-white/90 hover:text-indigo-300 text-base font-medium">Admin</Link>
               )}
@@ -69,6 +70,7 @@ const Navbar = () => {
                 <li><Link to="/dashboard" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Dashboard</Link></li>
                 <li><Link to="/routines" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Routines</Link></li>
                 <li><Link to="/progress" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Progress</Link></li>
+                <li><Link to="/statistics" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Statistics</Link></li>
                 {user?.user?.role === 'ADMIN' && (
                   <li><Link to="/admin" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Admin</Link></li>
                 )}

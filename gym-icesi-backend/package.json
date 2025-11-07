@@ -8,7 +8,8 @@
     "lint": "eslint \"./src/**/*.js\"",
     "lint:fix": "eslint \"./src/**/*.js\" --fix",
     "format": "prettier --write \"./src/**/*.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "populate:mongo": "node scripts/mongo/populate.js",
+    "populate:postgres": "node scripts/postgres/populate.js"
   },
   "keywords": [],
   "author": "",
