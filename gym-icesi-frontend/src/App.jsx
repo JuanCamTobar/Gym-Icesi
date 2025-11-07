@@ -102,11 +102,9 @@ function App() {
           />
 
           <Route
-            path="/admin/reports"
+            path="/reports"
             element={
-              <AdminRoute>
-                <ReportsPage />
-              </AdminRoute>
+              <ReportsPage />
             }
           />
           <Route

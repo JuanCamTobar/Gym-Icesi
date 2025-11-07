@@ -7,7 +7,6 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log('Current user in Navbar:', user);
 
   return (
     <nav className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 shadow-md">
@@ -20,10 +19,11 @@ const Navbar = () => {
         <div className="hidden md:flex items-center space-x-6">
           {user ? (
             <>
-              <Link to="/dashboard" className="text-white/90 hover:text-indigo-300 text-base font-medium">Dashboard</Link>
-              <Link to="/routines" className="text-white/90 hover:text-indigo-300 text-base font-medium">Routines</Link>
-              <Link to="/progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Progress</Link>
-              <Link to="/statistics" className="text-white/90 hover:text-indigo-300 text-base font-medium">Statistics</Link>
+              <Link to="/dashboard" className="text-white/90 hover:text-indigo-300 text-base font-medium">Menú principal</Link>
+              <Link to="/routines" className="text-white/90 hover:text-indigo-300 text-base font-medium">Rutinas</Link>
+              <Link to="/progress" className="text-white/90 hover:text-indigo-300 text-base font-medium">Progreso</Link>
+              <Link to="/statistics" className="text-white/90 hover:text-indigo-300 text-base font-medium">Estadisticas</Link>
+              <Link to="/reports" className="text-white/90 hover:text-indigo-300 text-base font-medium">Reportes</Link>
               {user?.user?.role === 'ADMIN' && (
                 <Link to="/admin" className="text-white/90 hover:text-indigo-300 text-base font-medium">Admin</Link>
               )}
@@ -71,6 +71,8 @@ const Navbar = () => {
                 <li><Link to="/routines" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Routines</Link></li>
                 <li><Link to="/progress" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Progress</Link></li>
                 <li><Link to="/statistics" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Statistics</Link></li>
+                <li><Link to="/reports" className="text-white/90 hover:text-indigo-300 text-base font-medium">Reportes</Link></li>
+
                 {user?.user?.role === 'ADMIN' && (
                   <li><Link to="/admin" className="text-white hover:text-indigo-300 block px-3 py-2 text-base font-medium">Admin</Link></li>
                 )}

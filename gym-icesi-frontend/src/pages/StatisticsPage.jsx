@@ -22,9 +22,8 @@ const StatisticsPage = () => {
           const { role } = user.user;
 
           // Admin users only need global stats
-          if (role === 'ADMIN') {
+          if (role === 'ADMIN' && user.user.employee_type!='Docente') {
             const adminRes = await statisticsService.getAdminOverview();
-            console.log('1. Datos recibidos del backend (adminOverview):', adminRes.data);
             setAdminOverview(adminRes.data);
           } else {
             const [routinesRes, progressRes] = await Promise.all([
@@ -34,7 +33,7 @@ const StatisticsPage = () => {
             setUserStartedRoutines(routinesRes.data);
             setUserProgressCalendar(progressRes.data);
 
-            if (role === 'EMPLOYEE') {
+            if (role === 'EMPLOYEE' && user.user.employee_type!='Docente') {
               const trainerRes = await statisticsService.getTrainerStats();
               setTrainerStats(trainerRes.data);
             }
@@ -167,7 +166,6 @@ const StatisticsPage = () => {
     const monthStr = selectedMonth;
 
     const routineDataForMonth = adminOverview.routines?.find(r => r.month === monthStr);
-    console.log('2a. Datos de rutinas para el mes seleccionado:', routineDataForMonth);
     if (routineDataForMonth?.dailyCounts) {
       routineDataForMonth.dailyCounts.forEach(item => {
         dailyData[item.day - 1].routines = item.count;
@@ -175,7 +173,6 @@ const StatisticsPage = () => {
     }
 
     const assignmentDataForMonth = adminOverview.assignments?.find(a => a.month === monthStr);
-    console.log('2b. Datos de asignaciones para el mes seleccionado:', assignmentDataForMonth);
     if (assignmentDataForMonth?.dailyCounts) {
       assignmentDataForMonth.dailyCounts.forEach(item => {
         dailyData[item.day - 1].assignments = item.count;
@@ -183,14 +180,12 @@ const StatisticsPage = () => {
     }
 
     const followupDataForMonth = adminOverview.followups?.find(f => f.month === monthStr);
-    console.log('2c. Datos de seguimientos para el mes seleccionado:', followupDataForMonth);
     if (followupDataForMonth?.dailyCounts) {
       followupDataForMonth.dailyCounts.forEach(item => {
         dailyData[item.day - 1].followups = item.count;
       });
     }
 
-    console.log('3. Datos finales para el gráfico:', dailyData);
 
     return (
       <div className="mb-8">

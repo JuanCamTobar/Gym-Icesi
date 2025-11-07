@@ -32,7 +32,7 @@ const AdminPage = () => {
           </Link>
 
           <Link
-            to="/admin/statistics"
+            to="/statistics"
             className="flex flex-col items-center justify-center p-6 bg-purple-100 rounded-xl shadow-md hover:bg-purple-200 transition-all duration-300 ease-in-out transform hover:scale-105 text-purple-800 font-semibold text-lg"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-3 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

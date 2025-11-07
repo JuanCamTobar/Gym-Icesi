@@ -4,14 +4,17 @@ const reportController = require('../controllers/report.controller');
 const auth = require('../middlewares/auth');
 const authorize = require('../middlewares/authorize');
 
-// @route   GET /reports/top-users
-// @desc    Get top users based on activity
-// @access  Private (Admin)
-router.get('/top-users', auth, authorize('admin'), reportController.getTopUsers);
+// Admin Routes
+router.get('/admin/overview', auth, authorize('ADMIN'), reportController.getAdminOverviewReport);
+router.get('/admin/user-activity', auth, authorize('ADMIN'), reportController.getAdminUserActivityReport);
 
-// @route   GET /reports/trainer-performance
-// @desc    Get trainer performance metrics
-// @access  Private (Admin)
-router.get('/trainer-performance', auth, authorize('admin'), reportController.getTrainerPerformance);
+// Trainer Routes
+router.get('/trainer/student-overview', auth, reportController.getTrainerStudentOverview);
+router.get('/trainer/student-progress', auth, reportController.getTrainerStudentProgress);
+
+// User Routes
+router.get('/user/consistency', auth, reportController.getUserConsistencyReport);
+router.get('/user/total-routines', auth, reportController.getUserTotalRoutinesCompleted);
 
 module.exports = router;
+
