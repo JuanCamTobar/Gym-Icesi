@@ -9,12 +9,12 @@ router.get('/admin/overview', auth, authorize('ADMIN'), reportController.getAdmi
 router.get('/admin/user-activity', auth, authorize('ADMIN'), reportController.getAdminUserActivityReport);
 
 // Trainer Routes
-router.get('/trainer/student-overview', auth, reportController.getTrainerStudentOverview);
-router.get('/trainer/student-progress', auth, reportController.getTrainerStudentProgress);
+router.get('/trainer/student-overview', auth, authorize('EMPLOYEE'), reportController.getTrainerStudentOverview);
+router.get('/trainer/student-progress', auth, authorize('EMPLOYEE'), reportController.getTrainerStudentProgress);
 
 // User Routes
-router.get('/user/consistency', auth, reportController.getUserConsistencyReport);
-router.get('/user/total-routines', auth, reportController.getUserTotalRoutinesCompleted);
+router.get('/user/consistency', auth, authorize('STUDENT', 'EMPLOYEE'), reportController.getUserConsistencyReport);
+router.get('/user/total-routines', auth, authorize('STUDENT', 'EMPLOYEE'), reportController.getUserTotalRoutinesCompleted);
 
 module.exports = router;
 

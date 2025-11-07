@@ -32,15 +32,20 @@ const ReportsPage = () => {
           adminUserActivity: userActivityRes.data,
         };
       } else if (role === 'EMPLOYEE' && user.user.employee_type==='Instructor') {
-        const [studentOverviewRes, studentProgressRes] = await Promise.all([
+        const [studentOverviewRes, studentProgressRes, consistencyRes, totalRoutinesRes] = await Promise.all([
           reportService.getTrainerStudentOverview(),
           reportService.getTrainerStudentProgress(),
+          reportService.getUserConsistencyReport(),
+          reportService.getUserTotalRoutinesCompleted(),
         ]);
         fetchedReports = {
           trainerStudentOverview: studentOverviewRes.data,
           trainerStudentProgress: studentProgressRes.data,
+          userConsistency: consistencyRes.data,
+          userTotalRoutines: totalRoutinesRes.data,
         };
-      } else if (role === 'STUDENT' || role === 'EMPLOYEE') {
+        
+      } else if (role === 'STUDENT') {
         const [consistencyRes, totalRoutinesRes] = await Promise.all([
           reportService.getUserConsistencyReport(),
           reportService.getUserTotalRoutinesCompleted(),
@@ -148,31 +153,10 @@ const ReportsPage = () => {
               )}
             </div>
 
-            {/* Trainer Student Progress */}
-            <div className="bg-white shadow-lg rounded-2xl border border-gray-200 p-6 mb-8">
-              <h3 className="text-xl font-bold text-indigo-600 mb-4">Progreso Promedio de Estudiantes (Entrenador)</h3>
-              {reports.trainerStudentProgress && reports.trainerStudentProgress.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={reports.trainerStudentProgress}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="username" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="averageCompletion" fill="#82ca9d" name="% Completado Promedio" />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <p className="text-gray-500">No hay datos de progreso de estudiantes para mostrar.</p>
-              )}
-            </div>
           </>
         )}
 
-        {user.user.role === 'USER' || user.user.role === 'EMPLOYEE' &&(
+        {(user.user.role === 'STUDENT' || (user.user.role === 'EMPLOYEE' && user.user.employee_type === 'Instructor')) && (
           <>
             {/* User Consistency Report */}
             <div className="bg-white shadow-lg rounded-2xl border border-gray-200 p-6 mb-8">

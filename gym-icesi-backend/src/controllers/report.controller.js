@@ -65,17 +65,32 @@ exports.getAdminUserActivityReport = async (req, res) => {
 // Trainer Reports
 exports.getTrainerStudentOverview = async (req, res) => {
   try {
-    const trainerId = req.user.id; // Assuming trainer ID is available in req.user
+    const trainerUsername = req.user.id; // This is the username of the logged-in trainer user
+
+    // Find the User record for the logged-in trainer
+    const trainerUser = await User.findOne({ where: { username: trainerUsername } });
+
+    if (!trainerUser) {
+      return res.status(404).json({ msg: 'Trainer user not found' });
+    }
+
+    // Use the employee_id from the User record to find the Trainer record
+    const trainer = await Trainer.findOne({ where: { employee_id: trainerUser.employee_id } });
+
+    if (!trainer) {
+      return res.status(404).json({ msg: 'Trainer profile not found for this employee' });
+    }
+
+    const trainerUuid = trainer.id;
 
     const assignedStudents = await User.findAll({
-      where: { trainerId: trainerId },
+      where: { trainerId: trainerUuid },
       attributes: ['username', 'email'],
       include: [{
         model: RoutineLog,
         attributes: ['id'],
       }],
     });
-
     const studentsWithRoutineCounts = assignedStudents.map(student => ({
       username: student.username,
       email: student.email,
@@ -91,10 +106,26 @@ exports.getTrainerStudentOverview = async (req, res) => {
 
 exports.getTrainerStudentProgress = async (req, res) => {
   try {
-    const trainerId = req.user.id; // Assuming trainer ID is available in req.user
+    const trainerUsername = req.user.id; // This is the username of the logged-in trainer user
+
+    // Find the User record for the logged-in trainer
+    const trainerUser = await User.findOne({ where: { username: trainerUsername } });
+
+    if (!trainerUser) {
+      return res.status(404).json({ msg: 'Trainer user not found' });
+    }
+
+    // Use the employee_id from the User record to find the Trainer record
+    const trainer = await Trainer.findOne({ where: { employee_id: trainerUser.employee_id } });
+
+    if (!trainer) {
+      return res.status(404).json({ msg: 'Trainer profile not found for this employee' });
+    }
+
+    const trainerUuid = trainer.id;
 
     const assignedStudents = await User.findAll({
-      where: { trainerId: trainerId },
+      where: { trainerId: trainerUuid },
       attributes: ['username'],
     });
 
