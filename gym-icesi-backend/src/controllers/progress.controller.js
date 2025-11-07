@@ -1,5 +1,7 @@
 const ProgressTracking = require('../models/mongo/ProgressTracking');
 const CustomRoutine = require('../models/mongo/CustomRoutine');
+const User = require('../models/postgres').User;
+const Employee = require('../models/postgres').Employee;
 
 // @route   POST /api/progress
 // @desc    Record daily progress for a routine
@@ -80,6 +82,48 @@ exports.getProgressByRoutineAndStudent = async (req, res) => {
       .sort({ date: 1 }); // Sort by date ascending
 
     res.json(progressData);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// @route   POST /api/progress/:id/comment
+// @desc    Add a comment to a progress tracking entry
+// @access  Private (Trainer)
+exports.addComment = async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+  const trainerId = req.user.id; // Assuming the authenticated user is a trainer
+
+  try {
+    const progress = await ProgressTracking.findById(id);
+
+    if (!progress) {
+      return res.status(404).json({ msg: 'Progress entry not found' });
+    }
+
+    let trainerName = trainerId;
+    const user = await User.findOne({ where: { username: trainerId } });
+
+    if (user && user.employee_id) {
+      const employee = await Employee.findByPk(user.employee_id);
+      if (employee) {
+        trainerName = `${employee.first_name} ${employee.last_name}`;
+      }
+    }
+
+    const newComment = {
+      comment,
+      trainer_id: trainerId,
+      trainer_name: trainerName,
+    };
+
+    progress.comments.push(newComment);
+
+    await progress.save();
+
+    res.json(progress);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

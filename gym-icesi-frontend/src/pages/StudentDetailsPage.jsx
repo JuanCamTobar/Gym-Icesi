@@ -12,11 +12,13 @@ const StudentDetailsPage = () => {
   const [error, setError] = useState('');
   const [showRoutineDetailsModal, setShowRoutineDetailsModal] = useState(false);
   const [selectedRoutineDetails, setSelectedRoutineDetails] = useState(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [selectedProgressEntry, setSelectedProgressEntry] = useState(null);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        // Fetch custom routines for the student
         const routinesResponse = await customRoutineService.getCustomRoutinesByStudent(studentUsername);
         setStudentRoutines(routinesResponse.data);
         if (routinesResponse.data.length > 0) {
@@ -56,6 +58,29 @@ const StudentDetailsPage = () => {
   const handleCloseRoutineDetailsModal = () => {
     setSelectedRoutineDetails(null);
     setShowRoutineDetailsModal(false);
+  };
+
+  const handleOpenCommentModal = (progressEntry) => {
+    setSelectedProgressEntry(progressEntry);
+    setShowCommentModal(true);
+  };
+
+  const handleCloseCommentModal = () => {
+    setSelectedProgressEntry(null);
+    setShowCommentModal(false);
+    setComment('');
+  };
+
+  const handleAddComment = async () => {
+    if (!comment.trim()) return;
+    try {
+      await progressService.addComment(selectedProgressEntry._id, comment);
+      fetchProgressForRoutine(selectedRoutineForProgress);
+      handleCloseCommentModal();
+    } catch (error) {
+      setError('Error al agregar el comentario.');
+      console.error(error);
+    }
   };
 
   if (loading) {
@@ -154,6 +179,24 @@ const StudentDetailsPage = () => {
                       </div>
                     ))}
                   </div>
+                  <div className="mt-4">
+                    <h5 className="font-semibold text-gray-700">Comentarios del Entrenador:</h5>
+                    {progressEntry.comments && progressEntry.comments.length > 0 ? (
+                      <ul className="list-disc list-inside mt-2">
+                        {progressEntry.comments.map((comment, index) => (
+                          <li key={index} className="text-sm text-gray-600">{comment.comment} </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-gray-500">No hay comentarios.</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleOpenCommentModal(progressEntry)}
+                    className="mt-4 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition"
+                  >
+                    Añadir Comentario
+                  </button>
                 </div>
               ))}
             </div>
@@ -164,7 +207,36 @@ const StudentDetailsPage = () => {
           )}
         </div>
 
-        {/* Routine Details Modal (similar to RoutinesPage) */}
+        {/* Comment Modal */}
+        {showCommentModal && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
+              <h3 className="text-xl font-bold text-indigo-600 mb-4">Añadir Comentario</h3>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                rows="4"
+                placeholder="Escribe tu comentario aquí..."
+              ></textarea>
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={handleCloseCommentModal}
+                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg mr-2 hover:bg-gray-300 transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleAddComment}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                >
+                  Guardar Comentario
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showRoutineDetailsModal && selectedRoutineDetails && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-4xl mx-4 my-8 relative animate-fadeIn">

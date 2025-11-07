@@ -18,4 +18,9 @@ router.get('/routine/:routineId', auth, progressController.getProgressByRoutine)
 // @access  Private (Instructor authorized to view this student)
 router.get('/routine/:routineId/student/:studentUsername', auth, progressController.getProgressByRoutineAndStudent);
 
+// @route   POST /api/progress/:id/comment
+// @desc    Add a comment to a progress tracking entry
+// @access  Private (Trainer)
+router.post('/:id/comment', auth, progressController.addComment);
+
 module.exports = router;

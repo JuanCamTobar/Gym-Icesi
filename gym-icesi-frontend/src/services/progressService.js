@@ -22,10 +22,15 @@ const getProgressByRoutineAndStudent = (routineId, studentUsername) => {
   return axios.get(`${API_URL}/routine/${routineId}/student/${studentUsername}`, { headers: getAuthHeader() });
 };
 
+const addComment = (progressId, comment) => {
+  return axios.post(`${API_URL}/${progressId}/comment`, { comment }, { headers: getAuthHeader() });
+};
+
 const progressService = {
   getProgressByRoutine,
   recordDailyProgress,
   getProgressByRoutineAndStudent,
+  addComment,
 };
 
 export default progressService;

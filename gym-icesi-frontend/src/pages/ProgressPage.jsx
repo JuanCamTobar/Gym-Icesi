@@ -324,6 +324,18 @@ const ProgressPage = () => {
                       </div>
                     ))}
                   </div>
+                  <div className="mt-4">
+                    <h5 className="font-semibold text-gray-700">Comentarios del Entrenador:</h5>
+                    {progressEntry.comments && progressEntry.comments.length > 0 ? (
+                      <ul className="list-disc list-inside mt-2">
+                        {progressEntry.comments.map((comment, index) => (
+                          <li key={index} className="text-sm text-gray-600">{comment.comment} </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-gray-500">No hay comentarios.</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

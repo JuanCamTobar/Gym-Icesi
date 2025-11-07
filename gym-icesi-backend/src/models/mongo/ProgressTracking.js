@@ -34,6 +34,14 @@ const ProgressTrackingSchema = new mongoose.Schema({
       notes: { type: String },
     },
   ],
+  comments: [
+    {
+      comment: { type: String },
+      trainer_id: { type: String },
+      trainer_name: { type: String },
+      date: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 module.exports = mongoose.model('ProgressTracking', ProgressTrackingSchema);
